@@ -5,7 +5,7 @@ from google.adk.runners import InMemoryRunner
 from google.adk.tools import AgentTool, FunctionTool, google_search
 from google.genai import types
 
-# This agent runs ONCE at the beginning to create the first draft.
+# This agent runs once at the beginning to create the first draft.
 initial_writer_agent = Agent(
     name="InitialWriterAgent",
     model="gemini-2.5-flash-lite",
