@@ -1,0 +1,7 @@
+#!/Users/simon_pl19nc8/Desktop/Code/Projects/Google_Agents/venv/bin/python3.13
+import sys
+from google.cloud.aiplatform.tensorboard.uploader_main import run_main
+if __name__ == '__main__':
+    if sys.argv[0].endswith('.exe'):
+        sys.argv[0] = sys.argv[0][:-4]
+    sys.exit(run_main())
