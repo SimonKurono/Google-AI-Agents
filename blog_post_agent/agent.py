@@ -5,6 +5,43 @@ from google.adk.runners import InMemoryRunner
 from google.adk.tools import AgentTool, FunctionTool, google_search
 from google.genai import types
 
+#———————————————————————Helpers————————————————————————
+def show_python_code_and_result(response):
+    for i in range(len(response)):
+        # Check if the response contains a valid function call result from the code executor
+        if (
+            (response[i].content.parts)
+            and (response[i].content.parts[0])
+            and (response[i].content.parts[0].function_response)
+            and (response[i].content.parts[0].function_response.response)
+        ):
+            response_code = response[i].content.parts[0].function_response.response
+            if "result" in response_code and response_code["result"] != "```":
+                if "tool_code" in response_code["result"]:
+                    print(
+                        "Generated Python Code >> ",
+                        response_code["result"].replace("tool_code", ""),
+                    )
+                else:
+                    print("Generated Python Response >> ", response_code["result"])
+
+
+print("✅ Helper functions defined.")
+
+# This is the function that the RefinerAgent will call to exit the loop.
+def exit_loop():
+    """Call this function ONLY when the critique is 'APPROVED', indicating the story is finished and no more changes are needed."""
+    return {"status": "approved", "message": "Story approved. Exiting refinement loop."}
+
+print("✅ exit_loop function created.")
+
+retry_config = types.HttpRetryOptions(
+    attempts=5,  # Maximum retry attempts
+    exp_base=7,  # Delay multiplier
+    initial_delay=1,
+    http_status_codes=[429, 500, 503, 504],  # Retry on these HTTP errors
+)
+
 # This agent runs once at the beginning to create the first draft.
 initial_writer_agent = Agent(
     name="InitialWriterAgent",
@@ -31,12 +68,6 @@ critic_agent = Agent(
 
 print("✅ critic_agent created.")
 
-# This is the function that the RefinerAgent will call to exit the loop.
-def exit_loop():
-    """Call this function ONLY when the critique is 'APPROVED', indicating the story is finished and no more changes are needed."""
-    return {"status": "approved", "message": "Story approved. Exiting refinement loop."}
-
-print("✅ exit_loop function created.")
 
 # This agent refines the story based on critique OR calls the exit_loop function.
 refiner_agent = Agent(
@@ -71,3 +102,7 @@ root_agent = SequentialAgent(
 )
 
 print("✅ Loop and Sequential Agents created.")
+
+
+
+
