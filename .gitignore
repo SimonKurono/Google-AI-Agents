@@ -1,16 +1,19 @@
+# Environment files
 .env
-/env
-*env
-./env
-*/env
+env/
+*.env
 
-venv
-/venv
-.venv
-./venv
+# Virtual environments
+venv/
+.venv/
 
-/__pycache__
-*__pycache__
-.__pycache__
+# Python cache
+__pycache__/
+*.py[cod]
 
-.gitignore
+# Ignore system files
+.DS_Store
+
+# (optional) VSCode / IDE config
+.vscode/
+.idea/
